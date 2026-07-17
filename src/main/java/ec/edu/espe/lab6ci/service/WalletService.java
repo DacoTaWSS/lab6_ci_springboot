@@ -35,7 +35,6 @@ public class WalletService {
         Wallet save = walletRepository.save(wallet);
         return new WalletResponse(save.getId(), save.getBalance());
     }
-
     //Depositar dinero en la billetera
     public double deposit(String walletId, double amount){
         if(amount <= 0){
@@ -50,22 +49,17 @@ public class WalletService {
         walletRepository.save(wallet);
         return wallet.getBalance();
     }
-
     public double withdraw(String walletId, double amount){
         if(amount <= 0){
             throw new IllegalArgumentException("Withdrawal amount must be positive");
         }
-
         Wallet wallet = walletRepository.findById(walletId)
                 .orElseThrow(() -> new IllegalStateException("Wallet not found"));
-
         if(wallet.getBalance() < amount){
             throw new IllegalStateException("Insufficient funds");
         }
-
         wallet.withdraw(amount);
         walletRepository.save(wallet);
         return wallet.getBalance();
-
     }
 }
