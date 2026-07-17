@@ -21,20 +21,16 @@ public class WalletService {
         if(ownerEmail == null || !ownerEmail.contains("@")){
             throw new IllegalArgumentException("Invalid email");
         }
-
         if(initialBalance < 0){
             throw new IllegalArgumentException("Initial balance must be positive");
         }
-
         if(riskClient.isBlocked(ownerEmail)){
             throw new IllegalArgumentException("User is blocked");
         }
-
         //Regla de negocio: no duplicar la billetera por email
         if(walletRepository.existsByOwnerEmail(ownerEmail)){
             throw new IllegalArgumentException("Wallet already exists for this email");
         }
-
         Wallet wallet = new Wallet(ownerEmail, initialBalance);
         Wallet save = walletRepository.save(wallet);
         return new WalletResponse(save.getId(), save.getBalance());
@@ -45,17 +41,31 @@ public class WalletService {
         if(amount <= 0){
             throw new IllegalArgumentException("Amount must be positive");
         }
-
         Optional<Wallet> found = walletRepository.findById(walletId);
-
         if(found.isEmpty()){
             throw new IllegalArgumentException("Wallet not found");
         }
-
         Wallet wallet = found.get();
         wallet.deposit(amount);
-
         walletRepository.save(wallet);
         return wallet.getBalance();
+    }
+
+    public double withdraw(String walletId, double amount){
+        if(amount <= 0){
+            throw new IllegalArgumentException("Withdrawal amount must be positive");
+        }
+
+        Wallet wallet = walletRepository.findById(walletId)
+                .orElseThrow(() -> new IllegalStateException("Wallet not found"));
+
+        if(wallet.getBalance() < amount){
+            throw new IllegalStateException("Insufficient funds");
+        }
+
+        wallet.withdraw(amount);
+        walletRepository.save(wallet);
+        return wallet.getBalance();
+
     }
 }
