@@ -1,0 +1,26 @@
+name: CI_SpringBoot
+
+on:
+  push:
+    branches:
+     - main
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v2
+
+      - name: Configurar java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Ejecutar pruebas
+        run: ./gradlew test
+
+      - name: Ejecutar build
+        run: ./gradlew build
