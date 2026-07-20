@@ -8,4 +8,5 @@ public interface WalletRepository {
     Wallet save(Wallet wallet);
     Optional<Wallet> findById(String id);
     boolean existsByOwnerEmail(String id);
+
 }
