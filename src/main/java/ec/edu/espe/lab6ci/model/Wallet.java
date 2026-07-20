@@ -4,34 +4,36 @@ import java.util.UUID;
 
 public class Wallet {
     private final String id;
-    private final String ownerEmail;
-    private  double balance;
+    private final String equipmentCode;
+    private final String borrowerEmail;
+    private final int loanDays;
+    private final String status;
 
-    public Wallet(String ownerEmail, double balance) {
+    public Wallet(String equipmentCode, String borrowerEmail, int loanDays) {
         this.id = UUID.randomUUID().toString();
-        this.ownerEmail = ownerEmail;
-        this.balance = balance;
+        this.equipmentCode = equipmentCode;
+        this.borrowerEmail = borrowerEmail;
+        this.loanDays = loanDays;
+        this.status = "CREATED";
     }
 
     public String getId() {
         return id;
     }
 
-    public String getOwnerEmail() {
-        return ownerEmail;
+    public String getEquipmentCode() {
+        return equipmentCode;
     }
 
-    public double getBalance() {
-        return balance;
+    public String getBorrowerEmail() {
+        return borrowerEmail;
     }
 
-    //Deporsitar dinero en la billetera
-    public void deposit(double amount){
-        this.balance += amount;
+    public int getLoanDays() {
+        return loanDays;
     }
 
-    //Retirar dinero de la billetera
-    public void withdraw(double amount){
-        this.balance -= amount;
+    public String getStatus() {
+        return status;
     }
 }

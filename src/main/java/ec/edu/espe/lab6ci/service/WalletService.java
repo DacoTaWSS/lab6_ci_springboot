@@ -8,13 +8,42 @@ import java.util.Optional;
 
 public class WalletService {
     private final WalletRepository walletRepository;
-    private final RiskClient riskClient;
+    private final EquipmentPolicyClient riskClient;
 
-    public WalletService(WalletRepository walletRepository, RiskClient riskClient) {
+
+    public WalletService(WalletRepository walletRepository, EquipmentPolicyClient riskClient) {
         this.walletRepository = walletRepository;
         this.riskClient = riskClient;
     }
 
+
+    public WalletResponse createLoan(String equipmentCode, String borrowerEmail, int loanDays) {
+        if (equipmentCode == null || equipmentCode.isBlank()) {
+            throw new IllegalArgumentException("El codigo no puede estar vacio");
+        }
+
+        if (borrowerEmail == null || !borrowerEmail.contains("@")) {
+            throw new IllegalArgumentException("Invalid email");
+        }
+
+        if (loanDays < 1 || loanDays > 15) {
+            throw new IllegalArgumentException("El dia debe estar entre 1 y 15");
+        }
+
+        if (riskClient.isBlocked(borrowerEmail)) {
+            throw new IllegalArgumentException("User is blocked");
+        }
+
+        if (walletRepository.existsByOwnerEmail(borrowerEmail)) {
+            throw new IllegalArgumentException("Equipo prestado");
+        }
+
+        Wallet wallet = new Wallet(equipmentCode, borrowerEmail, loanDays);
+        Wallet save = walletRepository.save(wallet);
+
+        return new WalletResponse(save.getId(), "APPROVED");
+    }
+/*
     //Crear una billetera
     public WalletResponse createWallet(String ownerEmail, double initialBalance){
         //Validaciones
@@ -31,6 +60,7 @@ public class WalletService {
         if(walletRepository.existsByOwnerEmail(ownerEmail)){
             throw new IllegalArgumentException("Wallet already exists for this email");
         }
+
         Wallet wallet = new Wallet(ownerEmail, initialBalance);
         Wallet save = walletRepository.save(wallet);
         return new WalletResponse(save.getId(), save.getBalance());
@@ -49,6 +79,7 @@ public class WalletService {
         walletRepository.save(wallet);
         return wallet.getBalance();
     }
+
     public double withdraw(String walletId, double amount){
         if(amount <= 0){
             throw new IllegalArgumentException("Withdrawal amount must be positive");
@@ -61,5 +92,5 @@ public class WalletService {
         wallet.withdraw(amount);
         walletRepository.save(wallet);
         return wallet.getBalance();
-    }
+    }*/
 }

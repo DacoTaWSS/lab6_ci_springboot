@@ -1,16 +1,19 @@
 package ec.edu.espe.lab6ci.dto;
 
 public class WalletResponse {
-    private final String walletId;
-    private final double balance;
-    public WalletResponse(String walletId, double balance) {
-        this.walletId = walletId;
-        this.balance = balance;
+    private final String loanId;
+    private final String approvalCode;
+
+    public WalletResponse(String loanId, String approvalCode) {
+        this.loanId = loanId;
+        this.approvalCode = approvalCode;
     }
-    public String getWalletId() {
-        return walletId;
+
+    public String getLoanId() {
+        return loanId;
     }
-    public double getBalance() {
-        return balance;
+
+    public String getApprovalCode() {
+        return approvalCode;
     }
 }
